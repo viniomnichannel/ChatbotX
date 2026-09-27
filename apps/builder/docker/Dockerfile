@@ -25,7 +25,7 @@ COPY --from=pre /app/out/json/ .
 # Local to the build (and to BuildKit layer reuse) — deliberately NOT round-tripped
 # through the GitHub Actions cache: exporting/importing the multi-GB store cost far
 # more in CI than the ~40s install it was meant to save.
-RUN --mount=type=cache,target=/pnpm/store \
+RUN --mount=type=cache,id=s/873be89a-f834-46d3-b384-f323f22bfc2c-/pnpm/store,target=/pnpm/store \
   pnpm install --frozen-lockfile
 
 COPY --from=pre /app/out/full/ .
@@ -50,7 +50,7 @@ ENV BETTER_AUTH_URL="http://localhost:3000"
 #   remote-cache hit restores `.next/**` and skips `next build` entirely. This is
 #   the only mechanism that can actually skip the build; wiring it up is a
 #   secrets-only change.
-RUN --mount=type=cache,target=/app/apps/builder/.next/cache \
+RUN --mount=type=cache,id=s/873be89a-f834-46d3-b384-f323f22bfc2c-/app/apps/builder/.next/cache,target=/app/apps/builder/.next/cache \
   --mount=type=secret,id=TURBO_API,env=TURBO_API \
   --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
   --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
